@@ -1,0 +1,191 @@
+#Options for every configuration member
+- name          : name
+  description   : Name of the your SOC design
+  type          : OpenString
+  defaultValue  : "new_soc_design"
+  access        : True
+
+- name          : build
+  description   : Build the design
+  type          : Boolean
+  defaultValue  : True
+  access        : False
+
+- name          : sys_clk_freq
+  description   : System clock frequency
+  type          : Integer
+  defaultValue  : 60e6
+  access        : True
+
+- name          : soft_i2c
+  description   : Use software I2C
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : hard_i2c
+  description   : Use hardware I2C
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : soft_spi
+  description   : Use software SPI
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : hard_spi
+  description   : Use hardware SPI
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : SDcard
+  description   : Use SDcard
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : output_dir
+  description   : Output directory
+  type          : FilePath
+  defaultValue  :
+  access        : True
+
+- name          : build_backend
+  description   : Build backend
+  type          : OpenString
+  defaultValue  : "litex"
+  access        : True
+
+- name          : doc
+  description   : Generate documentation
+  type          : Boolean
+  defaultValue  : True
+  access        : True
+
+- name          : bios_lto
+  description   : Use link time optimization for the bios
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : bios_format
+  description   : Format of the bios
+  type          : OpenString
+  defaultValue  : "integer"
+  access        : True
+
+- name          : bios_console
+  description   : Console of the bios
+  type          : OpenString
+  defaultValue  : "full"
+  access        : True
+
+- name          : bus_standard
+  description   : Bus standard
+  type          : RestrictedString
+  defaultValue  : "wishbone"
+  options       : ["wishbone", "axi", "apb"]
+  access        : True
+
+- name          : bus_data_width
+  description   : Bus data width in bits
+  type          : Integer
+  defaultValue  : 32
+  access        : True
+
+- name          : bus_address_width
+  description   : Bus address width in bits
+  type          : Integer
+  defaultValue  : 32
+  access        : True
+
+- name          : bus_timeout
+  description   : Bus timeout in cycles
+  type          : Integer
+  defaultValue  : 1000000
+  access        : True
+
+- name          : bus_bursting
+  description   : Bus bursting
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : bus_interconnect
+  description   : Bus interconnect
+  type          : RestrictedString
+  defaultValue  : "shared"
+  options       : ["shared", "local"]
+  access        : True
+
+- name          : cpu_type
+  description   : CPU type
+  type          : RestrictedString
+  defaultValue  : "vexriscv"
+  options       : ["vexriscv", "picorv32"]
+  access        : True
+
+- name          : no_ctrl
+  description   : Disable control
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : integrated_rom_size
+  description   : Integrated ROM size in bytes
+  type          : Integer
+  defaultValue  : 8192
+  access        : True
+
+- name          : integrated_sram_size
+  description   : Integrated SRAM size in bytes
+  type          : Integer
+  defaultValue  : 8192
+  access        : True
+
+- name          : csr_data_width
+  description   : CSR data width in bits
+  type          : Integer
+  defaultValue  : 32
+  access        : True
+
+- name          : csr_address_width
+  description   : CSR address width in bits
+  type          : Integer
+  defaultValue  : 14
+  access        : True
+
+- name          : csr_paging
+  description   : CSR paging
+  type          : Integer
+  defaultValue  : 2048
+  access        : True
+
+- name          : csr_ordering
+  description   : CSR ordering
+  type          : RestrictedString
+  defaultValue  : "big"
+  options       : ["big", "small"]
+  access        : True
+
+- name          : no_ident_version
+  description   : Disable identification version
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : no_uart
+  description   : Disable UART
+  type          : Boolean
+  defaultValue  : False
+  access        : True
+
+- name          : uart_name
+  description   : UART name
+  type          : RestrictedString
+  defaultValue  : "serial"
+  options       : ["serial", "uart"]
+  access        : True
