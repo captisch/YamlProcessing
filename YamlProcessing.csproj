@@ -25,4 +25,11 @@
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1"/>
         <PackageReference Include="YamlDotNet" Version="16.3.0" />
     </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Assets\configFile.yaml" />
+      <Content Include="Assets\configFile.yaml">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
 </Project>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Reflection;
 using YamlDotNet.RepresentationModel;
 using YamlProcessing.Models;
 
@@ -18,7 +19,9 @@ public partial class MainWindowViewModel : ViewModelBase
     
     public void Test()
     {
-        string configFilePath = "C:\\Users\\Schröer\\RiderProjects\\YamlProcessing\\Assets\\configFile.yaml";
+        // Pfad zum YAML-File in Assets-Ordner
+        // Build-Eigenschaft der Datei auf "Content" und "Copy if newer" setzen !
+        string configFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", "configFile.yaml"); 
         
         var yml = System.IO.File.ReadAllText(configFilePath);
         
