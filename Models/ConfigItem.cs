@@ -3,8 +3,19 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace YamlProcessing.Models;
 
+enum ConfigItemTypes
+{
+    String,
+    Integer,
+    Boolean,
+    Float,
+    Enum
+};
+
 public partial class ConfigItem : ObservableObject
 {
+    
+    
     [ObservableProperty]
     public string? name;
     
@@ -23,5 +34,24 @@ public partial class ConfigItem : ObservableObject
     [ObservableProperty]
     public string? access;
     
-    public ObservableCollection<string?> options = new();
+    public ObservableCollection<string?> options { get; set; } = new();
+    
+    partial void OnDefaultValueChanged(string? oldValue, string? newValue)
+    {
+        if (string.IsNullOrWhiteSpace(Value) && !string.IsNullOrWhiteSpace(newValue))
+        {
+            Value = newValue;
+        }
+    }
+
+    partial void OnValueChanged(string? oldValue, string? newValue)
+    {
+        if (string.IsNullOrWhiteSpace(newValue) && !string.IsNullOrWhiteSpace(DefaultValue))
+        {
+            // Nur setzen, wenn es wirklich leer ist; verhindert Endlosschleifen
+            if (!string.Equals(oldValue, DefaultValue))
+                Value = DefaultValue;
+        }
+    }
+
 }

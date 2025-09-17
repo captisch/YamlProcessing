@@ -28,6 +28,13 @@ public partial class MainWindowViewModel : ViewModelBase
         var deserializer = new YamlDotNet.Serialization.Deserializer();
 
         items = deserializer.Deserialize<ObservableCollection<ConfigItem>>(yml);
+        
+        foreach (var item in items)
+        {
+            if (string.IsNullOrWhiteSpace(item.Value) && !string.IsNullOrWhiteSpace(item.DefaultValue))
+                item.Value = item.DefaultValue;
+        }
+
 
         foreach (var item in items)
         {

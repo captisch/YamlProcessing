@@ -4,11 +4,92 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:models="clr-namespace:YamlProcessing.Models"
+        xmlns:t="using:YamlProcessing.Templates"
+        xmlns:conv="using:YamlProcessing.Converters"
         mc:Ignorable="d"
         Width="1000" Height="550"
         x:Class="YamlProcessing.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="YamlProcessing">
+        
+        <Window.Resources>
+            <conv:StringToBoolConverter x:Key="StringToBoolConverter" />
+            <conv:ScientificToIntegerStringConverter x:Key="ScientificToIntegerStringConverter"/>
+            
+            <!-- Template für OpenString -->
+            <DataTemplate x:Key="OpenStringItemTemplate" DataType="models:ConfigItem">
+                <Grid ColumnDefinitions="200,*" ColumnSpacing="8">
+                    <TextBlock Text="{Binding Name}"/>
+                    <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}"
+                             ToolTip.Tip="{Binding Description}"  />
+                </Grid>
+                
+            </DataTemplate>
+            
+            <!-- Template für Boolean -->
+            <DataTemplate x:Key="BooleanItemTemplate" DataType="models:ConfigItem">
+                <Grid ColumnDefinitions="200,*" ColumnSpacing="8">
+                    <TextBlock Text="{Binding Name}"/>
+                    <!-- Value ist string; CheckBox braucht bool: einfacher Inline-Converter -->
+                    <CheckBox Grid.Column="1">
+                        <CheckBox.IsChecked>
+                            <Binding Path="Value" Mode="TwoWay" Converter="{StaticResource StringToBoolConverter}"/>
+                        </CheckBox.IsChecked>
+                        <CheckBox.Content>
+                            <TextBlock Text="{Binding Description}"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                </Grid>
+            </DataTemplate>
+
+            <!-- Template für RestrictedString -->
+            <DataTemplate x:Key="RestrictedStringItemTemplate" DataType="models:ConfigItem">
+                <Grid ColumnDefinitions="200,*" ColumnSpacing="8">
+                    <TextBlock Text="{Binding Name}"/>
+                    <ComboBox Grid.Column="1"
+                              ItemsSource="{Binding options}"
+                              SelectedItem="{Binding Value, Mode=TwoWay}"/>
+                </Grid>
+            </DataTemplate>
+            
+            <!-- Template für Integer (wissenschaftliche Notation erlaubt) -->
+            <DataTemplate x:Key="IntegerItemTemplate" DataType="models:ConfigItem">
+                <Grid ColumnDefinitions="200,*" ColumnSpacing="8">
+                    <TextBlock Text="{Binding Name}"/>
+                    <TextBox Grid.Column="1"
+                             Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ScientificToIntegerStringConverter}}"
+                             ToolTip.Tip="{Binding Description}"
+                             Watermark="z. B. 1500, 1.5e3, 2E+6" />
+                </Grid>
+            </DataTemplate>
+            
+
+            <!-- Optional: Fallback-Template für andere Typen -->
+            <DataTemplate x:Key="DefaultItemTemplate" DataType="models:ConfigItem">
+                <Grid ColumnDefinitions="200,*" ColumnSpacing="8">
+                    <TextBlock Text="{Binding Name}"/>
+                    <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}"/>
+                </Grid>
+            </DataTemplate>
+
+            <!-- Template-Selector-Instanz -->
+            <t:ConfigItemTemplateSelector
+                x:Key="ConfigItemTemplateSelector"
+                OpenStringTemplate="{StaticResource OpenStringItemTemplate}"
+                BooleanTemplate="{StaticResource BooleanItemTemplate}"
+                RestrictedStringTemplate="{StaticResource RestrictedStringItemTemplate}"
+                IntegerTemplate="{StaticResource IntegerItemTemplate}"
+                DefaultTemplate="{StaticResource DefaultItemTemplate}" />
+        </Window.Resources>
+
+        <Border>
+            <ScrollViewer>
+                <ItemsControl ItemsSource="{Binding items}"
+                              ItemTemplate="{StaticResource ConfigItemTemplateSelector}">
+                    <!-- ... existing code ... -->
+                </ItemsControl>
+            </ScrollViewer>
+        </Border>
         
 </Window>
