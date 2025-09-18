@@ -62,7 +62,7 @@ public partial class MainWindowViewModel : ViewModelBase
 
         foreach (var item in items)
         {
-            yml +=  string.Format("{0,-15}", item.Name) + "\t\t\t: " + item.Value + "\n";
+            yml +=  item.Name + ": " + item.Value + "\n";
         }
         
         /*
