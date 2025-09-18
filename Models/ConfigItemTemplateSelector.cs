@@ -11,6 +11,7 @@ public sealed class ConfigItemTemplateSelector : IDataTemplate
     public IDataTemplate? BooleanTemplate { get; set; }
     public IDataTemplate? RestrictedStringTemplate { get; set; }
     public IDataTemplate? IntegerTemplate { get; set; }
+    public IDataTemplate? FilePathTemplate { get; set; }
     public IDataTemplate? DefaultTemplate { get; set; }
 
     public Control? Build(object? param)
@@ -24,6 +25,7 @@ public sealed class ConfigItemTemplateSelector : IDataTemplate
             : type?.Equals("Boolean", StringComparison.OrdinalIgnoreCase) == true ? BooleanTemplate?.Build(param)
             : type?.Equals("RestrictedString", StringComparison.OrdinalIgnoreCase) == true ? RestrictedStringTemplate?.Build(param)
             : type?.Equals("Integer", StringComparison.OrdinalIgnoreCase) == true ? IntegerTemplate?.Build(param)
+            :type?.Equals("FilePath", StringComparison.OrdinalIgnoreCase) == true ? FilePathTemplate?.Build(param)
             : DefaultTemplate?.Build(param);
     }
 
