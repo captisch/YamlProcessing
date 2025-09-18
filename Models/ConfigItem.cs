@@ -32,7 +32,7 @@ public partial class ConfigItem : ObservableObject
     public string? description;
     
     [ObservableProperty]
-    public string? access;
+    public bool? access;
     
     public ObservableCollection<string?> options { get; set; } = new();
     
