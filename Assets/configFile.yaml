@@ -57,7 +57,7 @@
   description   : Build backend
   type          : OpenString
   defaultValue  : "litex"
-  access        : True
+  access        : False
 
 - name          : doc
   description   : Generate documentation
