@@ -7,7 +7,7 @@
         xmlns:t="using:YamlProcessing.Templates"
         xmlns:conv="using:YamlProcessing.Converters"
         mc:Ignorable="d"
-        Width="1000" Height="550"
+        Width="600" Height="600"
         x:Class="YamlProcessing.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"

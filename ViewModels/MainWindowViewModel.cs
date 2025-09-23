@@ -19,6 +19,8 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     public ObservableCollection<ConfigItem> items { get; set; } = new();
     
+    public ObservableCollection<ExternalModule> externalModules { get; set; } = new();
+    
     public MainWindowViewModel()
     {
         Load();
@@ -64,15 +66,6 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             yml +=  item.Name + ": " + item.Value + "\n";
         }
-        
-        /*
-        var serializer = new YamlDotNet.Serialization.SerializerBuilder()
-            .IgnoreFields()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
-        var yml = serializer.Serialize(items);
-        */
-        
         
         System.IO.File.WriteAllText(saveFilePath, yml);
         Console.WriteLine($"Saving to {saveFilePath}");
