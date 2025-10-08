@@ -107,6 +107,8 @@
                             Spacing="8">
                     <Button Content="Save"
                             Command="{Binding SaveCommand}"/>
+                    <Button Content="Add Ext. Module"
+                            Command="{Binding AddExternalModuleCommand}"/>
                 </StackPanel>
                 <ScrollViewer DockPanel.Dock="Bottom"
                               AllowAutoHide="True" 

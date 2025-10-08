@@ -96,5 +96,15 @@ public partial class MainWindowViewModel : ViewModelBase
             item.Value = path;
         }
     }
+    
+    [RelayCommand]
+    private void AddExternalModule()
+    {
+        var ownerwindow = Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        ownerwindow.MainWindow.Width +=600;
 
+        //externalModules.Add(new ExternalModule());
+    }
+
+    
 }
