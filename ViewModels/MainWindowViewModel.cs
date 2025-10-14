@@ -98,12 +98,46 @@ public partial class MainWindowViewModel : ViewModelBase
     }
     
     [RelayCommand]
-    private void AddExternalModule()
+    private async Task AddExternalModule()
     {
-        var ownerwindow = Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
-        ownerwindow.MainWindow.Width +=600;
+        var lifetime = Avalonia.Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime;
+        var window = lifetime?.MainWindow;
+        if (window?.StorageProvider is null)
+            return;
 
-        //externalModules.Add(new ExternalModule());
+        var files = await window.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
+        {
+            Title = "Moduledatei auswählen",
+            AllowMultiple = true,
+            FileTypeFilter = new[]
+            {
+                new FilePickerFileType("Verilog-Dateien"){ Patterns = new[] {"*.v"} }
+            }.ToList()
+            
+        });
+        var verilogParser = new VerilogParser();
+        foreach (var file in files)
+        {
+            var verilogPath = file.TryGetLocalPath() ?? file.Path.LocalPath;
+            #if DEBUG
+            Console.WriteLine(verilogPath);
+            #endif
+            
+            var modules = verilogParser.ReadVerilog(verilogPath);
+
+            if (modules.Count > 0)
+            {
+                foreach (var module in modules)
+                {
+                    externalModules.Add(new ExternalModule
+                    {
+                        Module = module,
+                        Source = verilogPath,
+                        Instance = $"Ext_Mod_{externalModules.Count}",
+                    });
+                }
+            }
+        }
     }
 
     
