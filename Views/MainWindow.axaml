@@ -78,6 +78,78 @@
                 </Grid>
             </DataTemplate>
             
+            <DataTemplate x:Key="PortTemplate" DataType="models:Port">
+                <Grid ColumnDefinitions="*,*,*,*" Margin="2">
+                    <TextBlock Grid.Column="0" Text="{Binding Direction}"/>
+                    <TextBlock Grid.Column="1" Text="{Binding Type}"/>
+                    <TextBlock Grid.Column="2" Text="{Binding Width}"/>
+                    <TextBlock Grid.Column="3" Text="{Binding Name}"/>
+                </Grid>
+            </DataTemplate>
+            
+            <DataTemplate x:Key="ExternalModuleTemplate" DataType="models:ExternalModule">
+                <Expander Width="400"
+                          Margin="3"
+                          Padding="0">
+                    <Expander.Header>
+                        <TextBlock Text="{Binding Instance}"/>
+                    </Expander.Header>
+                    <StackPanel>
+                        <Grid ColumnDefinitions="200,*" 
+                              ColumnSpacing="8"
+                              Margin="10"
+                              HorizontalAlignment="Stretch">
+                            <TextBlock Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       Text="Instance name"/>
+                            <TextBox Grid.Column="1"
+                                     VerticalAlignment="Center"
+                                     Text="{Binding Instance}"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="200,*" 
+                              ColumnSpacing="8"
+                              Margin="10"
+                              HorizontalAlignment="Stretch">
+                            <TextBlock Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       Text="Module name"/>
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                     Text="{Binding Module.Name}"/>
+                        </Grid>
+                        <Expander HorizontalAlignment="Stretch"
+                                  Margin="5">
+                            <Expander.Header>
+                                <TextBlock Padding="0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Ports ("/>
+                                        <TextBlock Text="{Binding Module.Ports.Count}"/>
+                                        <TextBlock Text="):"/>
+                                    </StackPanel>
+                                </TextBlock>
+                            </Expander.Header>
+                            <ItemsControl ItemsSource="{Binding Module.Ports}"
+                                          ItemTemplate="{StaticResource PortTemplate}"/>
+                        </Expander>
+                        <Grid ColumnDefinitions="Auto,*"
+                              Background="DimGray"
+                              >
+                            <TextBlock Grid.Column="0"
+                                       Padding="10,0,0,0"
+                                       FontSize="10"
+                                       Foreground="White"
+                                       Opacity="75"
+                                       Text="source: "/>
+                            <SelectableTextBlock Grid.Column="1"
+                                                 FontSize="10"
+                                                 Foreground="White"
+                                                 Opacity="90"
+                                                 Text="{Binding Source}"/>
+                        </Grid>
+                    </StackPanel>
+                </Expander>
+            </DataTemplate>
+            
 
             <!-- Optional: Fallback-Template für andere Typen -->
             <DataTemplate x:Key="DefaultItemTemplate" DataType="models:ConfigItem">
@@ -99,8 +171,8 @@
         </Window.Resources>
 
         <Border Margin="10">
+            
             <DockPanel >
-                
                 <StackPanel Orientation="Horizontal"
                             DockPanel.Dock="Top"
                             Margin="8"
@@ -110,13 +182,27 @@
                     <Button Content="Add Ext. Module"
                             Command="{Binding AddExternalModuleCommand}"/>
                 </StackPanel>
-                <ScrollViewer DockPanel.Dock="Bottom"
-                              AllowAutoHide="True" 
-                              Padding="0,0,10,-10">
-                    <ItemsControl ItemsSource="{Binding items}"
-                                  ItemTemplate="{StaticResource ConfigItemTemplateSelector}"/>
-                </ScrollViewer>
                 
+                <Grid ColumnDefinitions="Auto,*">
+                    <ScrollViewer Grid.Column="0"
+                                  AllowAutoHide="True" 
+                                  Padding="0,0,10,0">
+                        <ItemsControl ItemsSource="{Binding items}"
+                                      ItemTemplate="{StaticResource ConfigItemTemplateSelector}"/>
+                    </ScrollViewer>
+                    
+                    <DockPanel Grid.Column="1">
+                        <TextBlock Text="External Modules"
+                                   DockPanel.Dock="Top"/>
+                        
+                        <ScrollViewer AllowAutoHide="True"
+                                      DockPanel.Dock="Top"
+                                      Padding="0,0,10,0">
+                            <ItemsControl ItemsSource="{Binding externalModules}"
+                                          ItemTemplate="{StaticResource ExternalModuleTemplate}"/>
+                        </ScrollViewer>
+                    </DockPanel>
+                </Grid>
             </DockPanel>
         </Border>
         
