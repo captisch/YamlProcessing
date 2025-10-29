@@ -67,6 +67,32 @@ public partial class MainWindowViewModel : ViewModelBase
             yml +=  item.Name + ": " + item.Value + "\n";
         }
         
+        yml += "\nExternal_Modules: {\n";
+
+        foreach (var (index, module) in externalModules.Index())
+        {
+            yml += $"\t\"Ext_mod_{index}\":{{\n";
+            var source = module.GiveSource ? module.Source : "None";
+            yml += $"\t\t\"source\": \"{source}\",\n";
+            yml += $"\t\t\"module_name\": \"{module.Module.Name}\",\n";
+            yml += $"\t\t\"instance_name\": \"{module.Instance}\",\n";
+            yml += $"\t\t\"ports\": {{\n";
+            foreach (var (index_port, port) in module.Module.Ports.Index())
+            {
+                yml += $"\t\t\t\"port{index_port}\": {{\n";
+                yml += $"\t\t\t\t\"name\": \"{port.Name}\",\n";
+                var direction = port.Direction.ToString().ToLower() == "input" ? "in" : 
+                                port.Direction.ToString().ToLower() == "output" ? "out" :
+                                port.Direction.ToString().ToLower();
+                yml += $"\t\t\t\t\"direction\": \"{direction}\",\n";
+                yml += $"\t\t\t\t\"size\": {port.Width}\n";
+                yml += $"\t\t\t}},\n";
+            }
+            yml += "\t\t},\n";
+            yml += "\t},\n";
+        }
+        yml += "}\n";
+        
         System.IO.File.WriteAllText(saveFilePath, yml);
         Console.WriteLine($"Saving to {saveFilePath}");
         return Task.CompletedTask;;
