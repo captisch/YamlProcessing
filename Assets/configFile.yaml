@@ -189,9 +189,3 @@
   defaultValue  : "serial"
   options       : ["serial", "uart"]
   access        : True
-  
-- name          : External_Modules
-  description   : External Modules
-  type          : ExternalModules
-  defaultValue  :
-  access        : True
