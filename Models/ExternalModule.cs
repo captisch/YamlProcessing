@@ -10,4 +10,6 @@ public partial class ExternalModule : ObservableObject
     [ObservableProperty] private Module? module;
 
     [ObservableProperty] private string? instance;
+    
+    [ObservableProperty] private bool giveSource;
 }
