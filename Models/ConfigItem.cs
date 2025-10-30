@@ -1,4 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -15,7 +18,29 @@ enum ConfigItemTypes
 
 public partial class ConfigItem : ObservableObject
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
     
+    private string? _value;
+
+    public string? Value
+    {
+        get => _value;
+        set
+        {
+            if (value == _value) return;
+            
+            string? previousValue = _value;
+
+            if (string.IsNullOrWhiteSpace(value) && !string.IsNullOrWhiteSpace(DefaultValue))
+            {
+                value = DefaultValue;
+            }
+            else value = value.Trim();
+            
+            _value = value;
+            OnPropertyChanged();
+        }
+    }
     
     [ObservableProperty]
     public string? name;
@@ -23,9 +48,10 @@ public partial class ConfigItem : ObservableObject
     [ObservableProperty]
     public string? defaultValue;
     
+    /*
     [ObservableProperty]
     private string? value;
-    
+    */
     [ObservableProperty]
     public string? type;
     
@@ -45,17 +71,21 @@ public partial class ConfigItem : ObservableObject
         }
     }
 
+    /*
     partial void OnValueChanged(string? oldValue, string? newValue)
     {
+        Console.WriteLine($"Changed from \"{oldValue}\" to \"{newValue}\"");
         if (string.IsNullOrWhiteSpace(newValue) && !string.IsNullOrWhiteSpace(DefaultValue))
         {
-            // Nur setzen, wenn es wirklich leer ist; verhindert Endlosschleifen
-            if (!string.Equals(oldValue, DefaultValue))
-                Value = DefaultValue;
+            
+            Value = DefaultValue;
+        }
+        else if (char.IsWhiteSpace(newValue[0]) || char.IsWhiteSpace(newValue[^1]))
+        {
+            Value = newValue.Trim();
         }
     }
-    
-    partial void OnLostFocus(string? oldValue, string? newValue)
+    */
 
     [RelayCommand]
     private void IsEntryValid(ConfigItem item)
