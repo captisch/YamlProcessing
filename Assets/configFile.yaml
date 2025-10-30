@@ -145,6 +145,12 @@
   type          : Integer
   defaultValue  : 8192
   access        : True
+  
+- name          : integrated_main_ram_size
+  description   : Integrated main RAM size in bytes
+  type          : Integer
+  defaultValue  : 8192
+  access        : True
 
 - name          : csr_data_width
   description   : CSR data width in bits
@@ -189,3 +195,4 @@
   defaultValue  : "serial"
   options       : ["serial", "uart"]
   access        : True
+
