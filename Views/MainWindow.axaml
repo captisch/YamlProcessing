@@ -20,8 +20,8 @@
             <!-- Template für OpenString -->
             <DataTemplate x:Key="OpenStringItemTemplate" DataType="models:ConfigItem">
                 <Grid ColumnDefinitions="250,*" ColumnSpacing="8" IsEnabled="{Binding Access}" Margin="2">
-                    <TextBlock Text="{Binding Description}" VerticalAlignment="Center"/>
-                    <TextBox Grid.Column="1" Text="{Binding Value, Mode=TwoWay}" VerticalAlignment="Center" LostFocus="{Binding IsEntryValidCommand}" />
+                    <TextBlock Grid.Column="0" Text="{Binding Description}" VerticalAlignment="Center"/>
+                    <TextBox Grid.Column="1" Text="{Binding Value, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" VerticalAlignment="Center" />
                 </Grid>
                 
             </DataTemplate>
