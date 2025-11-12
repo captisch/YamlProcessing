@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
@@ -18,8 +20,6 @@ enum ConfigItemTypes
 
 public partial class ConfigItem : ObservableObject
 {
-    public event PropertyChangedEventHandler? PropertyChanged;
-    
     private string? _value;
 
     public string? Value
@@ -27,19 +27,55 @@ public partial class ConfigItem : ObservableObject
         get => _value;
         set
         {
-            if (value == _value) return;
-            
-            string? previousValue = _value;
+            Debug.WriteLine($"entry:\"{value}\"");
+            //if (_value == value) return;
+            var trimmedValue = value?.Trim();
+            Debug.WriteLine($"after trim:\"{value}\"");
+            var validtedValue = ValidateEntry(trimmedValue);
+            Debug.WriteLine($"after validation:\"{validtedValue}\"");
 
-            if (string.IsNullOrWhiteSpace(value) && !string.IsNullOrWhiteSpace(DefaultValue))
+            if (validtedValue != _value)
             {
-                value = DefaultValue;
+                _value = validtedValue;
+                Debug.WriteLine($"assigned after validation: private:\"{_value}\" public:\"{Value}\"");
+                OnPropertyChanged();
             }
-            else value = value.Trim();
-            
-            _value = value;
-            OnPropertyChanged();
+            else if (value != _value)
+            {
+                Debug.WriteLine($"Forcing UI update");
+                OnPropertyChanged();
+            }
         }
+    }
+
+    private string ValidateEntry(string? entry)
+    {
+        switch (Type)
+        {
+            case "OpenString":
+                if (string.IsNullOrWhiteSpace(entry) && !string.IsNullOrWhiteSpace(DefaultValue)) entry = DefaultValue;
+                return entry;
+            case "RestrictedString":
+                return entry;
+            case "Integer":
+                if (int.TryParse(entry, NumberStyles.AllowExponent, CultureInfo.InvariantCulture, out int intValue))
+                {
+                    Debug.WriteLine($"Parsed {entry} to {intValue}");
+                    return entry;
+                }
+                else if (!string.IsNullOrWhiteSpace(DefaultValue))
+                {
+                    return DefaultValue;
+                }
+                else return string.Empty;
+            case "Boolean":
+                return entry;
+            case "FilePath":
+                return entry;
+            case "Enum":
+                return entry;
+        }
+        return string.Empty;
     }
     
     [ObservableProperty]
@@ -86,32 +122,7 @@ public partial class ConfigItem : ObservableObject
         }
     }
     */
-
-    [RelayCommand]
-    private void IsEntryValid(ConfigItem item)
-    {
-        switch (item.Type)
-        {
-            case "OpenString":
-                if (string.IsNullOrWhiteSpace(item.Value) && !string.IsNullOrWhiteSpace(item.DefaultValue))
-                {
-                    item.Value = item.DefaultValue;
-                }
-                break;
-            case "RestrictedString":
-                break;
-            case "Integer":
-                break;
-            case "Boolean":
-                break;
-            case "Float":
-                break;
-            case "Enum":
-                break;
-            default:
-                break;
-        }
-    }
+    
 
 }
 
