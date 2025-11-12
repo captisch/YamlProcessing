@@ -54,12 +54,9 @@ public partial class MainWindowViewModel : ViewModelBase
             }
         }
     }
-    
-    [RelayCommand]
-    private Task Save()
-    {
-        string saveFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", "configFile_output.yaml");
 
+    private string CreateOutputConfigFile()
+    {
         var yml = "";
 
         foreach (var item in items)
@@ -72,7 +69,7 @@ public partial class MainWindowViewModel : ViewModelBase
         foreach (var (index, module) in externalModules.Index())
         {
             yml += $"\t\"Ext_mod_{index}\":{{\n";
-            var source = module.GiveSource ? module.Source : "None";
+            var source = module.LinkSource ? module.Source : "None";
             yml += $"\t\t\"source\": \"{source}\",\n";
             yml += $"\t\t\"module_name\": \"{module.Module.Name}\",\n";
             yml += $"\t\t\"instance_name\": \"{module.Instance}\",\n";
@@ -82,8 +79,8 @@ public partial class MainWindowViewModel : ViewModelBase
                 yml += $"\t\t\t\"port{index_port}\": {{\n";
                 yml += $"\t\t\t\t\"name\": \"{port.Name}\",\n";
                 var direction = port.Direction.ToString().ToLower() == "input" ? "in" : 
-                                port.Direction.ToString().ToLower() == "output" ? "out" :
-                                port.Direction.ToString().ToLower();
+                    port.Direction.ToString().ToLower() == "output" ? "out" :
+                    port.Direction.ToString().ToLower();
                 yml += $"\t\t\t\t\"direction\": \"{direction}\",\n";
                 yml += $"\t\t\t\t\"size\": {port.Width}\n";
                 yml += $"\t\t\t}},\n";
@@ -92,6 +89,33 @@ public partial class MainWindowViewModel : ViewModelBase
             yml += "\t},\n";
         }
         yml += "}\n";
+        
+        return yml;
+    }
+    
+    private ConfigItem? FindItemByName(string name)
+    {
+        name = name.ToLower();
+        return items.FirstOrDefault(item => item.Name == name);
+    }
+
+    [RelayCommand]
+    private Task Save()
+    {
+        var rootPath = Path.GetPathRoot(AppContext.BaseDirectory);
+
+        var nameItem = FindItemByName("Name");
+        if (nameItem is null)
+            return Task.CompletedTask;
+
+        string saveFilePath = Path.Combine(rootPath, "fentwumsGUI", "systembuilder", $"configFile_{nameItem.Value}.yaml");
+
+        if (!Directory.Exists(Path.GetDirectoryName(saveFilePath)))
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(saveFilePath));
+        }
+
+        var yml = CreateOutputConfigFile();
         
         System.IO.File.WriteAllText(saveFilePath, yml);
         Console.WriteLine($"Saving to {saveFilePath}");
