@@ -11,5 +11,5 @@ public partial class ExternalModule : ObservableObject
 
     [ObservableProperty] private string? instance;
     
-    [ObservableProperty] private bool giveSource;
+    [ObservableProperty] private bool linkSource;
 }
