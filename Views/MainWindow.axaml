@@ -30,7 +30,6 @@
             <DataTemplate x:Key="BooleanItemTemplate" DataType="models:ConfigItem">
                 <Grid ColumnDefinitions="250,*" ColumnSpacing="8" IsEnabled="{Binding Access}" Margin="2">
                     <TextBlock Text="{Binding Description}" VerticalAlignment="Center"/>
-                    <!-- Value ist string; CheckBox braucht bool: einfacher Inline-Converter -->
                     <CheckBox Grid.Column="1" VerticalAlignment="Center">
                         <CheckBox.IsChecked>
                             <Binding Path="Value" Mode="TwoWay" Converter="{StaticResource StringToBoolConverter}"/>
@@ -58,7 +57,9 @@
                 <Grid ColumnDefinitions="250,*" ColumnSpacing="8" IsEnabled="{Binding Access}" Margin="2">
                     <TextBlock Text="{Binding Description}" VerticalAlignment="Center"/>
                     <TextBox Grid.Column="1"
-                             Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource ScientificToIntegerStringConverter}}"
+                             Text="{Binding Value, 
+                                    Mode=TwoWay, 
+                                    UpdateSourceTrigger=LostFocus}"
                              Watermark="z. B. 1500, 1.5e3, 2E+6" 
                              VerticalAlignment="Center"/>
                 </Grid>
@@ -68,7 +69,7 @@
                 <Grid ColumnDefinitions="250,Auto,*" ColumnSpacing="8" IsEnabled="{Binding Access}" Margin="2">
                     <TextBlock Text="{Binding Description}" VerticalAlignment="Center"/>
                     <Button Grid.Column="1"
-                            Content="Choose output directory"
+                            Content="Choose litex output directory"
                             Command="{Binding Path=$parent[Window].DataContext.ChooseOutputDirectoryCommand}"
                             CommandParameter="{Binding .}"
                             VerticalAlignment="Center"/>
@@ -147,10 +148,10 @@
                               HorizontalAlignment="Stretch">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
-                                       Text="Give Source?"/>
+                                       Text="Link Source?"/>
                             <CheckBox Grid.Column="1" 
                                       VerticalAlignment="Center"
-                                      IsChecked="{Binding GiveSource}"/>
+                                      IsChecked="{Binding LinkSource}"/>
                         </Grid>
                         
                         <Grid ColumnDefinitions="Auto,*"
