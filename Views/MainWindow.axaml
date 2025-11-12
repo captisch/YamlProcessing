@@ -204,6 +204,8 @@
                             Command="{Binding SaveCommand}"/>
                     <Button Content="Add Ext. Module"
                             Command="{Binding AddExternalModuleCommand}"/>
+                    <Button Content="Run SystemBuilder"
+                            Command="{Binding GenerateSystemCommand}"></Button>
                 </StackPanel>
                 
                 <Grid ColumnDefinitions="Auto,*">

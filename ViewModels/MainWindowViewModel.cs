@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using YamlDotNet.RepresentationModel;
 using YamlDotNet.Serialization.NamingConventions;
@@ -189,6 +190,14 @@ public partial class MainWindowViewModel : ViewModelBase
             }
         }
     }
+    [ObservableProperty]
+    private SystemBuilder sb = new();
 
-    
+    [RelayCommand]
+    private async Task GenerateSystem()
+    {
+        sb.call();
+    }
+
+
 }
