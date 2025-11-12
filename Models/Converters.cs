@@ -41,10 +41,6 @@ public sealed class ScientificToIntegerStringConverter : IValueConverter
 
             var asLong = System.Convert.ToInt64(rounded);
             
-            Console.WriteLine(d);
-            Console.WriteLine(rounded);
-            Console.WriteLine(asLong);
-            
             return asLong.ToString(CultureInfo.InvariantCulture);
         }
 
