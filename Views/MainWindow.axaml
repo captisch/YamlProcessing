@@ -74,7 +74,7 @@
                             CommandParameter="{Binding .}"
                             VerticalAlignment="Center"/>
                     <TextBox Grid.Column="2"
-                             Text="{Binding Value, Mode=OneWay}"
+                             Text="{Binding Value, Mode=TwoWay}"
                              VerticalAlignment="Center"/>
                 </Grid>
             </DataTemplate>
@@ -148,10 +148,10 @@
                               HorizontalAlignment="Stretch">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
-                                       Text="Link Source?"/>
+                                       Text="Route to Topmodule?"/>
                             <CheckBox Grid.Column="1" 
                                       VerticalAlignment="Center"
-                                      IsChecked="{Binding LinkSource}"/>
+                                      IsChecked="{Binding RouteToTopmodule}"/>
                         </Grid>
                         
                         <Grid ColumnDefinitions="Auto,*"
@@ -217,7 +217,7 @@
                     </ScrollViewer>
                     
                     <DockPanel Grid.Column="1">
-                        <TextBlock Text="External Modules"
+                        <TextBlock Text="Submodules"
                                    DockPanel.Dock="Top"/>
                         
                         <ScrollViewer AllowAutoHide="True"
