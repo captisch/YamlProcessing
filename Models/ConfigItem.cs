@@ -28,7 +28,6 @@ public partial class ConfigItem : ObservableObject
         set
         {
             Debug.WriteLine($"entry:\"{value}\"");
-            //if (_value == value) return;
             var trimmedValue = value?.Trim();
             Debug.WriteLine($"after trim:\"{value}\"");
             var validtedValue = ValidateEntry(trimmedValue);
@@ -84,10 +83,6 @@ public partial class ConfigItem : ObservableObject
     [ObservableProperty]
     public string? defaultValue;
     
-    /*
-    [ObservableProperty]
-    private string? value;
-    */
     [ObservableProperty]
     public string? type;
     
@@ -106,24 +101,6 @@ public partial class ConfigItem : ObservableObject
             Value = newValue;
         }
     }
-
-    /*
-    partial void OnValueChanged(string? oldValue, string? newValue)
-    {
-        Console.WriteLine($"Changed from \"{oldValue}\" to \"{newValue}\"");
-        if (string.IsNullOrWhiteSpace(newValue) && !string.IsNullOrWhiteSpace(DefaultValue))
-        {
-            
-            Value = DefaultValue;
-        }
-        else if (char.IsWhiteSpace(newValue[0]) || char.IsWhiteSpace(newValue[^1]))
-        {
-            Value = newValue.Trim();
-        }
-    }
-    */
-    
-
 }
 
     
