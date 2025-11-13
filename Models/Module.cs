@@ -9,7 +9,9 @@ public class Module
 {
     public string Name { get; set; }
     public List<Port>? Ports { get; set; }
-    public string? Logic { get; set; } 
+    public string? Logic { get; set; }
+    
+    public List<ModuleParameter> Parameters { get; set; } = new();
 }
 
 public enum PortTypes{
