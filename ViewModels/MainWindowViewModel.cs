@@ -50,8 +50,8 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private async Task GenerateSystem()
     {
-        systemBuilder.call("/mnt/c");
+        ConfigFile.Save();
+        
+        systemBuilder.call(ConfigFile.OutputPath);
     }
-
-
 }
