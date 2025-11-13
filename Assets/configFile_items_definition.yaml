@@ -137,7 +137,7 @@
 - name          : integrated_rom_size
   description   : Integrated ROM size in bytes
   type          : Integer
-  defaultValue  : 8192
+  defaultValue  : 131072
   access        : True
 
 - name          : integrated_sram_size
