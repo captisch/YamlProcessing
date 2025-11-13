@@ -7,9 +7,11 @@ public partial class ExternalModule : ObservableObject
 {
     [ObservableProperty] private string? source;
     
+    [ObservableProperty] private string? filename;
+    
     [ObservableProperty] private Module? module;
 
     [ObservableProperty] private string? instance;
     
-    [ObservableProperty] private bool linkSource;
+    [ObservableProperty] private bool routeToTopmodule;
 }
