@@ -70,7 +70,7 @@
                     <TextBlock Text="{Binding Description}" VerticalAlignment="Center"/>
                     <Button Grid.Column="1"
                             Content="Choose litex output directory"
-                            Command="{Binding Path=$parent[Window].DataContext.ChooseOutputDirectoryCommand}"
+                            Command="{Binding Path=$parent[Window].DataContext.ChooseOutputDirectoryOfConfigCommand}"
                             CommandParameter="{Binding .}"
                             VerticalAlignment="Center"/>
                     <TextBox Grid.Column="2"
@@ -201,9 +201,9 @@
                             Margin="8"
                             Spacing="8">
                     <Button Content="Save"
-                            Command="{Binding SaveCommand}"/>
+                            Command="{Binding SaveConfigCommand}"/>
                     <Button Content="Add Ext. Module"
-                            Command="{Binding AddExternalModuleCommand}"/>
+                            Command="{Binding AddExternalModulesToConfigCommand}"/>
                     <Button Content="Run SystemBuilder"
                             Command="{Binding GenerateSystemCommand}"></Button>
                 </StackPanel>
@@ -212,7 +212,7 @@
                     <ScrollViewer Grid.Column="0"
                                   AllowAutoHide="True" 
                                   Padding="0,0,10,0">
-                        <ItemsControl ItemsSource="{Binding items}"
+                        <ItemsControl ItemsSource="{Binding ConfigFile.items}"
                                       ItemTemplate="{StaticResource ConfigItemTemplateSelector}"/>
                     </ScrollViewer>
                     
@@ -223,7 +223,7 @@
                         <ScrollViewer AllowAutoHide="True"
                                       DockPanel.Dock="Top"
                                       Padding="0,0,10,0">
-                            <ItemsControl ItemsSource="{Binding externalModules}"
+                            <ItemsControl ItemsSource="{Binding ConfigFile.externalModules}"
                                           ItemTemplate="{StaticResource ExternalModuleTemplate}"/>
                         </ScrollViewer>
                     </DockPanel>

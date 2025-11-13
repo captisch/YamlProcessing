@@ -28,7 +28,7 @@
 
     <ItemGroup>
       <None Remove="Assets\configFile.yaml" />
-      <Content Include="Assets\configFile.yaml">
+      <Content Include="Assets\configFile_items_definition.yaml">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
