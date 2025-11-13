@@ -52,6 +52,10 @@ public partial class ConfigFile : ObservableObject
         }
     }
 
+    private string indentBy(int level)
+    {
+        return string.Concat(Enumerable.Repeat(" ", 4*level));
+    }
     private string createOutput()
     {
         var yml = "";
@@ -61,29 +65,30 @@ public partial class ConfigFile : ObservableObject
             yml +=  item.Name + ": " + item.Value + "\n";
         }
         
-        yml += "\nExternal_Modules: {\n";
+        yml += "\nexternal_modules: {\n";
 
         foreach (var (index, module) in externalModules.Index())
         {
-            yml += $"\t\"Ext_mod_{index}\":{{\n";
-            var source = module.LinkSource ? module.Source : "None";
-            yml += $"\t\t\"source\": \"{source}\",\n";
-            yml += $"\t\t\"module_name\": \"{module.Module.Name}\",\n";
-            yml += $"\t\t\"instance_name\": \"{module.Instance}\",\n";
-            yml += $"\t\t\"ports\": {{\n";
+            yml += $"{indentBy(1)}\"ext_mod_{index}\":{{\n";
+            var source = module.RouteToTopmodule ? $"{module.Filename}" : "None";
+            yml += $"{indentBy(2)}\"source\": \"{source}\",\n";
+            yml += $"{indentBy(2)}\"module_name\": \"{module.Module.Name}\",\n";
+            yml += $"{indentBy(2)}\"instance_name\": \"{module.Instance}\",\n";
+            yml += $"{indentBy(2)}\"parameters\": ,\n";                                      // placeholder for parameters, has to be filled with actual parameters later
+            yml += $"{indentBy(2)}\"ports\": {{\n";
             foreach (var (index_port, port) in module.Module.Ports.Index())
             {
-                yml += $"\t\t\t\"port{index_port}\": {{\n";
-                yml += $"\t\t\t\t\"name\": \"{port.Name}\",\n";
+                yml += $"{indentBy(3)}\"port{index_port}\": {{\n";
+                yml += $"{indentBy(4)}\"name\": \"{port.Name}\",\n";
                 var direction = port.Direction.ToString().ToLower() == "input" ? "in" : 
                     port.Direction.ToString().ToLower() == "output" ? "out" :
                     port.Direction.ToString().ToLower();
-                yml += $"\t\t\t\t\"direction\": \"{direction}\",\n";
-                yml += $"\t\t\t\t\"size\": {port.Width}\n";
-                yml += $"\t\t\t}},\n";
+                yml += $"{indentBy(4)}\"direction\": \"{direction}\",\n";
+                yml += $"{indentBy(4)}\"size\": {port.Width}\n";
+                yml += $"{indentBy(3)}}},\n";
             }
-            yml += "\t\t},\n";
-            yml += "\t},\n";
+            yml += $"{indentBy(2)}}},\n";
+            yml += $"{indentBy(1)}}},\n";
         }
         yml += "}\n";
         
@@ -107,7 +112,7 @@ public partial class ConfigFile : ObservableObject
 
         string saveFilePath = Path.Combine(rootPath, "fentwumsGUI", "systembuilder", $"configFile_{nameItem.Value}.yaml");
         
-        OutputPath = Path.GetDirectoryName(saveFilePath);
+        OutputPath = saveFilePath;
 
         if (!Directory.Exists(Path.GetDirectoryName(saveFilePath)))
         {
@@ -141,6 +146,12 @@ public partial class ConfigFile : ObservableObject
         if (folder is not null)
         {
             var path = folder.TryGetLocalPath() ?? folder.Path.LocalPath;
+            
+            if (OperatingSystem.IsWindows())
+            {
+                path = WSL.BuildWslPath(path);
+            }
+            
             item.Value = path;
         }
     }
@@ -180,6 +191,7 @@ public partial class ConfigFile : ObservableObject
                     {
                         Module = module,
                         Source = verilogPath,
+                        Filename = Path.GetFileName(verilogPath),
                         Instance = $"Ext_Mod_{externalModules.Count}",
                     });
                 }
