@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace YamlProcessing.Models;
 
@@ -27,12 +28,13 @@ public enum PortDirections{
     inout,
 }
 
-public class Port
+public partial class Port : ObservableObject
 {
-    public string Name { get; set; }
-    public int Width { get; set; }
-    public PortTypes Type { get; set; }
-    public PortDirections Direction { get; set; }
+    [ObservableProperty] private string? name;
+    [ObservableProperty] private int width;
+    [ObservableProperty] private PortTypes type;
+    [ObservableProperty] private PortDirections direction;
+    [ObservableProperty] private bool routeToTopmodule = true;
 }
 
 public class VerilogParser

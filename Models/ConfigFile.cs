@@ -79,6 +79,7 @@ public partial class ConfigFile : ObservableObject
             yml += $"{indentBy(2)}\"ports\": {{\n";
             foreach (var (index_port, port) in module.Module.Ports.Index())
             {
+                if (!port.RouteToTopmodule) continue;
                 yml += $"{indentBy(3)}\"port{index_port}\": {{\n";
                 yml += $"{indentBy(4)}\"name\": \"{port.Name}\",\n";
                 var direction = port.Direction.ToString().ToLower() == "input" ? "in" : 

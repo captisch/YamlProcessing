@@ -79,11 +79,14 @@
             </DataTemplate>
             
             <DataTemplate x:Key="PortTemplate" DataType="models:Port">
-                <Grid ColumnDefinitions="*,*,*,*" Margin="2">
+                <Grid ColumnDefinitions="*,*,*,*,*" Margin="2">
                     <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Direction}"/>
                     <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Type}"/>
                     <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding Width}"/>
                     <TextBlock Grid.Column="3" HorizontalAlignment="Center" Text="{Binding Name}"/>
+                    <CheckBox Grid.Column="4" HorizontalAlignment="Center"
+                              IsChecked="{Binding RouteToTopmodule}" 
+                              IsVisible="{Binding $parent[ItemsControl].((models:SubModule)DataContext).IsExternalModule}"></CheckBox>
                 </Grid>
             </DataTemplate>
             
@@ -117,6 +120,17 @@
                                        VerticalAlignment="Center"
                                      Text="{Binding Module.Name}"/>
                         </Grid>
+                        <Grid ColumnDefinitions="200,*" 
+                                                      ColumnSpacing="8"
+                                                      Margin="10"
+                                                      HorizontalAlignment="Stretch">
+                                                    <TextBlock Grid.Column="0"
+                                                               VerticalAlignment="Center"
+                                                               Text="External Submodule"/>
+                                                    <CheckBox Grid.Column="1" 
+                                                              VerticalAlignment="Center"
+                                                              IsChecked="{Binding IsExternalModule}"/>
+                                                </Grid>
                         <Expander HorizontalAlignment="Stretch"
                                   Margin="5">
                             <Expander.Header>
@@ -129,29 +143,21 @@
                                 </TextBlock>
                             </Expander.Header>
                             <StackPanel>
-                                <Grid ColumnDefinitions="*,*,*,*" 
+                                <Grid ColumnDefinitions="*,*,*,*,*" 
                                       Margin="2,5"
                                       Background="#112233">
                                     <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="direction"/>
                                     <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="type"/>
                                     <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="width"/>
                                     <TextBlock Grid.Column="3" HorizontalAlignment="Center" Text="name"/>
+                                    <TextBlock Grid.Column="4" HorizontalAlignment="Center" Text="Route"
+                                               IsVisible="{Binding IsExternalModule}"/>
                                 </Grid>
                                 <ItemsControl ItemsSource="{Binding Module.Ports}"
                                               ItemTemplate="{StaticResource PortTemplate}"/>
                             </StackPanel>
                         </Expander>
-                        <Grid ColumnDefinitions="200,*" 
-                              ColumnSpacing="8"
-                              Margin="10"
-                              HorizontalAlignment="Stretch">
-                            <TextBlock Grid.Column="0"
-                                       VerticalAlignment="Center"
-                                       Text="External Submodule"/>
-                            <CheckBox Grid.Column="1" 
-                                      VerticalAlignment="Center"
-                                      IsChecked="{Binding IsExternalModule}"/>
-                        </Grid>
+                        
                         
                         <Grid ColumnDefinitions="Auto,*"
                               Background="DimGray"
