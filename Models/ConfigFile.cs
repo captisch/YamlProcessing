@@ -18,7 +18,7 @@ public partial class ConfigFile : ObservableObject
     }
     public ObservableCollection<ConfigItem> items { get; set; } = new();
     
-    public ObservableCollection<ExternalModule> externalModules { get; set; } = new();
+    public ObservableCollection<SubModule> subModules { get; set; } = new();
     
     [ObservableProperty]
     private string? outputPath;
@@ -27,6 +27,7 @@ public partial class ConfigFile : ObservableObject
     {
         // Pfad zum YAML-File in Assets-Ordner
         // Build-Eigenschaft der Datei auf "Content" und "Copy if newer" setzen !
+        
         string configFilePath = Path.Combine(AppContext.BaseDirectory, "Assets", "configFile_items_definition.yaml"); 
         
         var yml = System.IO.File.ReadAllText(configFilePath);
@@ -67,10 +68,10 @@ public partial class ConfigFile : ObservableObject
         
         yml += "\nexternal_modules: {\n";
 
-        foreach (var (index, module) in externalModules.Index())
+        foreach (var (index, module) in subModules.Index())
         {
             yml += $"{indentBy(1)}\"ext_mod_{index}\":{{\n";
-            var source = module.RouteToTopmodule ? $"{module.Filename}" : "None";
+            var source = module.IsExternalModule ? $"{module.Filename}" : "None";
             yml += $"{indentBy(2)}\"source\": \"{source}\",\n";
             yml += $"{indentBy(2)}\"module_name\": \"{module.Module.Name}\",\n";
             yml += $"{indentBy(2)}\"instance_name\": \"{module.Instance}\",\n";
@@ -187,12 +188,12 @@ public partial class ConfigFile : ObservableObject
             {
                 foreach (var module in modules)
                 {
-                    externalModules.Add(new ExternalModule
+                    subModules.Add(new SubModule()
                     {
                         Module = module,
                         Source = verilogPath,
                         Filename = Path.GetFileName(verilogPath),
-                        Instance = $"Ext_Mod_{externalModules.Count}",
+                        Instance = $"Ext_Mod_{subModules.Count}",
                     });
                 }
             }

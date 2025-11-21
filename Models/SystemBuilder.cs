@@ -23,6 +23,7 @@ public class SystemBuilder
             // |   |  
             // |   |-- everthing litex related
             // |   |-- venv
+            
             FileName = "wsl.exe",
             Arguments = "cd ~/liteX\n" +                                // Path to LiteX directory
                         $"cp {wslPath} configFile_output.yaml\n" +      // Copy config file to LiteX directory

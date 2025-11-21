@@ -18,6 +18,8 @@ public sealed class StringToBoolConverter : IValueConverter
         => value is bool b ? b.ToString() : "False";
 }
 
+
+// Won't be in use, but leave for reference
 public sealed class ScientificToIntegerStringConverter : IValueConverter
 {
     public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)

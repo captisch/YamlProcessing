@@ -3,7 +3,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace YamlProcessing.Models;
 
-public partial class ExternalModule : ObservableObject
+public partial class SubModule : ObservableObject
 {
     [ObservableProperty] private string? source;
     
@@ -13,5 +13,5 @@ public partial class ExternalModule : ObservableObject
 
     [ObservableProperty] private string? instance;
     
-    [ObservableProperty] private bool routeToTopmodule;
+    [ObservableProperty] private bool isExternalModule;
 }

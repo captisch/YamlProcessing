@@ -15,7 +15,6 @@
         
         <Window.Resources>
             <conv:StringToBoolConverter x:Key="StringToBoolConverter" />
-            <conv:ScientificToIntegerStringConverter x:Key="ScientificToIntegerStringConverter"/>
             
             <!-- Template für OpenString -->
             <DataTemplate x:Key="OpenStringItemTemplate" DataType="models:ConfigItem">
@@ -88,7 +87,7 @@
                 </Grid>
             </DataTemplate>
             
-            <DataTemplate x:Key="ExternalModuleTemplate" DataType="models:ExternalModule">
+            <DataTemplate x:Key="ExternalModuleTemplate" DataType="models:SubModule">
                 <Expander Width="400"
                           Margin="3"
                           Padding="0">
@@ -148,10 +147,10 @@
                               HorizontalAlignment="Stretch">
                             <TextBlock Grid.Column="0"
                                        VerticalAlignment="Center"
-                                       Text="Route to Topmodule?"/>
+                                       Text="External Submodule"/>
                             <CheckBox Grid.Column="1" 
                                       VerticalAlignment="Center"
-                                      IsChecked="{Binding RouteToTopmodule}"/>
+                                      IsChecked="{Binding IsExternalModule}"/>
                         </Grid>
                         
                         <Grid ColumnDefinitions="Auto,*"
@@ -223,7 +222,7 @@
                         <ScrollViewer AllowAutoHide="True"
                                       DockPanel.Dock="Top"
                                       Padding="0,0,10,0">
-                            <ItemsControl ItemsSource="{Binding ConfigFile.externalModules}"
+                            <ItemsControl ItemsSource="{Binding ConfigFile.subModules}"
                                           ItemTemplate="{StaticResource ExternalModuleTemplate}"/>
                         </ScrollViewer>
                     </DockPanel>
