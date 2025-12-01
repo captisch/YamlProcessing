@@ -118,7 +118,7 @@
   description   : Bus interconnect
   type          : RestrictedString
   defaultValue  : "shared"
-  options       : ["shared", "local"]
+  options       : ["shared", "crossbar"]
   access        : True
 
 - name          : cpu_type
