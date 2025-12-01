@@ -71,7 +71,7 @@ public partial class ConfigFile : ObservableObject
         foreach (var (index, module) in subModules.Index())
         {
             yml += $"{indentBy(1)}\"ext_mod_{index}\":{{\n";
-            var source = module.IsExternalModule ? $"{module.Filename}" : "None";
+            var source = module.IsExternalModule ? "None" : $"{module.Filename}" ;
             yml += $"{indentBy(2)}\"source\": \"{source}\",\n";
             yml += $"{indentBy(2)}\"module_name\": \"{module.Module.Name}\",\n";
             yml += $"{indentBy(2)}\"instance_name\": \"{module.Instance}\",\n";
