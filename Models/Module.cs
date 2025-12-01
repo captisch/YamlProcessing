@@ -12,7 +12,7 @@ public class Module
     public List<Port>? Ports { get; set; }
     public string? Logic { get; set; }
     
-    public List<ModuleParameter> Parameters { get; set; } = new();
+    public List<Parameter> Parameters { get; set; }
 }
 
 public enum PortTypes{
@@ -30,11 +30,18 @@ public enum PortDirections{
 
 public partial class Port : ObservableObject
 {
-    [ObservableProperty] private string? name;
-    [ObservableProperty] private int width;
-    [ObservableProperty] private PortTypes type;
     [ObservableProperty] private PortDirections direction;
+    [ObservableProperty] private PortTypes type;
+    [ObservableProperty] private bool signed;
+    [ObservableProperty] private int width;
+    [ObservableProperty] private string? name;
     [ObservableProperty] private bool routeToTopmodule = true;
+}
+
+public partial class Parameter : ObservableObject
+{
+    [ObservableProperty] private string? name;
+    [ObservableProperty] private string? value;
 }
 
 public class VerilogParser
@@ -55,18 +62,38 @@ public class VerilogParser
         var verilogTextNoComments = Regex.Replace(
             (Regex.Replace (verilogText, patternMultiLineComment, "")),
             patternSingleLineComment, "");
+        
+        var regexPatternParameterlist = @"(?:#\s*\(\s*(?<parameterlist>[\s\S]*?)\s*\)\s*)";
+        var regexPatternPortlist = @"(?:\(\s*(?<portlist>[\s\S]*?)\s*\)\s*)";
+        var regexPatternModuledeclaration = @$"(?:module\s+(?<modulename>\w+)\s*{regexPatternParameterlist}??{regexPatternPortlist}??;)";
+        var regexPatternModule = $@"(?<module>{regexPatternModuledeclaration}+?(?<logic>[\s\S]*?)endmodule)";
 
-        var patternModule =
-            @"(?<module>module\s+(?<modulename>\w+)\s*\((?<portlist>[\s\S]+?)\)\s*;(?<logic>[\s\S]*?)endmodule)";
-
-        var matchModule = Regex.Matches(verilogTextNoComments, patternModule);
+        var matchModule = Regex.Matches(verilogTextNoComments, regexPatternModule);
 
         foreach (Match match in matchModule)
         {
             var modulename = match.Groups["modulename"].Value;
             var modulelogic = match.Groups["logic"].Value;
-            var moduleports = new List<Port>();
+            
+            var moduleparameters = new List<Parameter>();
+            var parameterlist = match.Groups["parameterlist"].Value;
+            
+            var parameters = parameterlist.Split(',')
+                .Select(p => p.Replace("parameter ", "").Trim())
+                .Where(p => !string.IsNullOrWhiteSpace(p));
 
+            foreach (var parameter in parameters)
+            {
+                var parameterName = parameter.Split('=')[0].Trim();
+                var parameterValue = parameter.Split('=')[1].Trim();
+                moduleparameters.Add(new Parameter 
+                    {
+                        Name = parameterName, 
+                        Value = parameterValue
+                    });
+            }
+            
+            var moduleports = new List<Port>();
             var portlist = match.Groups["portlist"].Value;
             var ports = portlist.Split(',')
                 .Select(p => p.Trim())
@@ -78,6 +105,7 @@ public class VerilogParser
 
             foreach (var port in ports)
             {
+                bool isSigned = false;
                 var portBracketsReplaced = port.Replace('[', ' ').Replace(']', ' ');
 
                 var elements = portBracketsReplaced.Split(' ')
@@ -97,6 +125,10 @@ public class VerilogParser
                         lastPortType = portType;
                         lastPortWidth = 1;
                     }
+                    else if (element == "signed")
+                    {
+                        isSigned = true;
+                    }
                     else if (char.IsDigit(element[0]))
                     {
                         var width = element.Split(':')
@@ -113,7 +145,8 @@ public class VerilogParser
                             Direction = lastPortDirection,
                             Type = lastPortType,
                             Width = lastPortWidth,
-                            Name = element
+                            Name = element,
+                            Signed = isSigned
                         });
                     }
                 }
@@ -122,6 +155,7 @@ public class VerilogParser
             modules.Add(new Module
             {
                 Name = modulename,
+                Parameters = moduleparameters,
                 Ports = moduleports,
                 Logic = modulelogic
             });
