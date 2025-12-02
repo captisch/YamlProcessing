@@ -75,12 +75,12 @@ public partial class ConfigFile : ObservableObject
             yml += $"{indentBy(2)}\"source\": \"{source}\",\n";
             yml += $"{indentBy(2)}\"module_name\": \"{module.Module.Name}\",\n";
             yml += $"{indentBy(2)}\"instance_name\": \"{module.Instance}\",\n";
-            yml += $"{indentBy(2)}\"parameters\": ,{{\n";
+            yml += $"{indentBy(2)}\"parameters\": {{\n";
             foreach (var param in module.Module.Parameters)
             {
                 yml += $"{indentBy(3)}\"{param.Name}\": {param.Value},\n";
             }
-            
+            yml += $"{indentBy(2)}}},\n";
             yml += $"{indentBy(2)}\"ports\": {{\n";
             foreach (var (index_port, port) in module.Module.Ports.Index())
             {
