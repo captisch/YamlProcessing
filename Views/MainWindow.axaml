@@ -51,7 +51,7 @@
                 </Grid>
             </DataTemplate>
             
-            <!-- Template für Integer (wissenschaftliche Notation erlaubt) -->
+            <!-- Template für Integer -->
             <DataTemplate x:Key="IntegerItemTemplate" DataType="models:ConfigItem">
                 <Grid ColumnDefinitions="250,*" ColumnSpacing="8" IsEnabled="{Binding Access}" Margin="2">
                     <TextBlock Text="{Binding Description}" VerticalAlignment="Center"/>
@@ -68,7 +68,7 @@
                 <Grid ColumnDefinitions="250,Auto,*" ColumnSpacing="8" IsEnabled="{Binding Access}" Margin="2">
                     <TextBlock Text="{Binding Description}" VerticalAlignment="Center"/>
                     <Button Grid.Column="1"
-                            Content="Choose litex output directory"
+                            Content="Choose..."
                             Command="{Binding Path=$parent[Window].DataContext.ChooseOutputDirectoryOfConfigCommand}"
                             CommandParameter="{Binding .}"
                             VerticalAlignment="Center"/>
@@ -79,14 +79,21 @@
             </DataTemplate>
             
             <DataTemplate x:Key="PortTemplate" DataType="models:Port">
-                <Grid ColumnDefinitions="*,*,*,*,*" Margin="2">
+                <Grid ColumnDefinitions="*,*,*,*,Auto" Margin="2">
                     <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Direction}"/>
                     <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Type}"/>
                     <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding Width}"/>
                     <TextBlock Grid.Column="3" HorizontalAlignment="Center" Text="{Binding Name}"/>
-                    <CheckBox Grid.Column="4" HorizontalAlignment="Center"
+                    <CheckBox Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5,0,5,0"
                               IsChecked="{Binding RouteToTopmodule}" 
                               IsVisible="{Binding $parent[ItemsControl].((models:SubModule)DataContext).IsExternalModule}"></CheckBox>
+                </Grid>
+            </DataTemplate>
+            
+            <DataTemplate x:Key="ParameterTemplate" DataType="models:Parameter">
+                <Grid ColumnDefinitions="*,*" Margin="2">
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Name}"/>
+                    <TextBox Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Value}"/>
                 </Grid>
             </DataTemplate>
             
@@ -121,16 +128,40 @@
                                      Text="{Binding Module.Name}"/>
                         </Grid>
                         <Grid ColumnDefinitions="200,*" 
-                                                      ColumnSpacing="8"
-                                                      Margin="10"
-                                                      HorizontalAlignment="Stretch">
-                                                    <TextBlock Grid.Column="0"
-                                                               VerticalAlignment="Center"
-                                                               Text="External Submodule"/>
-                                                    <CheckBox Grid.Column="1" 
-                                                              VerticalAlignment="Center"
-                                                              IsChecked="{Binding IsExternalModule}"/>
-                                                </Grid>
+                              ColumnSpacing="8"
+                              Margin="10"
+                              HorizontalAlignment="Stretch">
+                            <TextBlock Grid.Column="0"
+                                       VerticalAlignment="Center"
+                                       Text="External Submodule"/>
+                            <CheckBox Grid.Column="1" 
+                                      VerticalAlignment="Center"
+                                      IsChecked="{Binding IsExternalModule}"/>
+                        </Grid>
+                        
+                        <Expander HorizontalAlignment="Stretch"
+                                  Margin="5">
+                            <Expander.Header>
+                                <TextBlock Padding="0">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Parameters ("/>
+                                        <TextBlock Text="{Binding Module.Parameters.Count}"/>
+                                        <TextBlock Text="):"/>
+                                    </StackPanel>
+                                </TextBlock>
+                            </Expander.Header>
+                            <StackPanel>
+                                <Grid ColumnDefinitions="*,*" 
+                                      Margin="2,5"
+                                      Background="#112233">
+                                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="Name"/>
+                                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="Value"/>
+                                </Grid>
+                                <ItemsControl ItemsSource="{Binding Module.Parameters}"
+                                              ItemTemplate="{StaticResource ParameterTemplate}"/>
+                            </StackPanel>
+                        </Expander>
+                        
                         <Expander HorizontalAlignment="Stretch"
                                   Margin="5">
                             <Expander.Header>
@@ -143,7 +174,7 @@
                                 </TextBlock>
                             </Expander.Header>
                             <StackPanel>
-                                <Grid ColumnDefinitions="*,*,*,*,*" 
+                                <Grid ColumnDefinitions="*,*,*,*,Auto" 
                                       Margin="2,5"
                                       Background="#112233">
                                     <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="direction"/>
@@ -198,7 +229,7 @@
                 DefaultTemplate="{StaticResource DefaultItemTemplate}" />
         </Window.Resources>
 
-        <Border Margin="10">
+        <Border Margin="5,5,0,5">
             
             <DockPanel >
                 <StackPanel Orientation="Horizontal"
@@ -213,26 +244,22 @@
                             Command="{Binding GenerateSystemCommand}"></Button>
                 </StackPanel>
                 
-                <Grid ColumnDefinitions="Auto,*">
-                    <ScrollViewer Grid.Column="0"
-                                  AllowAutoHide="True" 
-                                  Padding="0,0,10,0">
-                        <ItemsControl ItemsSource="{Binding ConfigFile.items}"
-                                      ItemTemplate="{StaticResource ConfigItemTemplateSelector}"/>
-                    </ScrollViewer>
-                    
-                    <DockPanel Grid.Column="1">
-                        <TextBlock Text="Submodules"
-                                   DockPanel.Dock="Top"/>
-                        
+                <TabControl Margin="0,10,0,5">
+                    <TabItem Header="Main Configuration">
+                        <ScrollViewer AllowAutoHide="True" 
+                                      Padding="0,0,20,0">
+                            <ItemsControl ItemsSource="{Binding ConfigFile.items}"
+                                          ItemTemplate="{StaticResource ConfigItemTemplateSelector}"/>
+                        </ScrollViewer>
+                    </TabItem>
+                    <TabItem Header="Submodules">
                         <ScrollViewer AllowAutoHide="True"
-                                      DockPanel.Dock="Top"
                                       Padding="0,0,10,0">
                             <ItemsControl ItemsSource="{Binding ConfigFile.subModules}"
                                           ItemTemplate="{StaticResource ExternalModuleTemplate}"/>
                         </ScrollViewer>
-                    </DockPanel>
-                </Grid>
+                    </TabItem>
+                </TabControl>
             </DockPanel>
         </Border>
         
