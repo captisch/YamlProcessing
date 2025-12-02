@@ -33,7 +33,7 @@ public partial class Port : ObservableObject
     [ObservableProperty] private PortDirections direction;
     [ObservableProperty] private PortTypes type;
     [ObservableProperty] private bool signed;
-    [ObservableProperty] private int width;
+    [ObservableProperty] private string width;
     [ObservableProperty] private string? name;
     [ObservableProperty] private bool routeToTopmodule = true;
 }
@@ -67,6 +67,8 @@ public class VerilogParser
         var regexPatternPortlist = @"(?:\(\s*(?<portlist>[\s\S]*?)\s*\)\s*)";
         var regexPatternModuledeclaration = @$"(?:module\s+(?<modulename>\w+)\s*{regexPatternParameterlist}??{regexPatternPortlist}??;)";
         var regexPatternModule = $@"(?<module>{regexPatternModuledeclaration}+?(?<logic>[\s\S]*?)endmodule)";
+        
+        var regexPatternPortdeclaration = @"(?:\s*(?<direction>inout|output|input)?\s*(?<type>reg|wire)?\s*(?<signed>signed)?\s*(?<width>\[[^\]]+\])?\s*(?<name>\w+)\s*)";
 
         var matchModule = Regex.Matches(verilogTextNoComments, regexPatternModule);
 
@@ -101,54 +103,59 @@ public class VerilogParser
 
             PortDirections lastPortDirection = PortDirections.none;
             PortTypes lastPortType = PortTypes.none;
-            int lastPortWidth = 1;
+            string lastPortWidth = "1";
 
             foreach (var port in ports)
             {
-                bool isSigned = false;
-                var portBracketsReplaced = port.Replace('[', ' ').Replace(']', ' ');
-
-                var elements = portBracketsReplaced.Split(' ')
-                    .Select(p => p.Trim())
-                    .Where(p => !string.IsNullOrWhiteSpace(p));
-
-                foreach (var element in elements)
+                var matchPortDeclaration = Regex.Match(port, regexPatternPortdeclaration);
+                
+                if (matchPortDeclaration.Success)
                 {
-                    if (Enum.TryParse(element, out PortDirections portDirection))
+                    var directionStr = matchPortDeclaration.Groups["direction"].Value;
+                    var typeStr = matchPortDeclaration.Groups["type"].Value;
+                    var signedStr = matchPortDeclaration.Groups["signed"].Value;
+                    var widthStr = matchPortDeclaration.Groups["width"].Value;
+                    var nameStr = matchPortDeclaration.Groups["name"].Value;
+
+                    PortDirections portDirection = lastPortDirection;
+                    PortTypes portType = lastPortType;
+                    string portWidth = lastPortWidth;
+                    bool isSigned = false;
+
+                    if (!string.IsNullOrWhiteSpace(directionStr) && Enum.TryParse(directionStr, out PortDirections parsedDirection))
                     {
+                        portDirection = parsedDirection;
                         lastPortDirection = portDirection;
-                        lastPortType = PortTypes.wire;
-                        lastPortWidth = 1;
+                        lastPortType = PortTypes.wire;      // reset type to wire, if direction is changed
+                        lastPortWidth = "1";                // reset width to 1, if direction is changed
                     }
-                    else if (Enum.TryParse(element, out PortTypes portType))
+
+                    if (!string.IsNullOrWhiteSpace(typeStr) && Enum.TryParse(typeStr, out PortTypes parsedType))
                     {
+                        portType = parsedType;
                         lastPortType = portType;
-                        lastPortWidth = 1;
+                        lastPortWidth = "1";                // reset width to 1, if type is changed
                     }
-                    else if (element == "signed")
+
+                    if (!string.IsNullOrWhiteSpace(signedStr))
                     {
                         isSigned = true;
                     }
-                    else if (char.IsDigit(element[0]))
+
+                    if (!string.IsNullOrWhiteSpace(widthStr))
                     {
-                        var width = element.Split(':')
-                            .Select(p => p.Trim())
-                            .Where(p => !string.IsNullOrWhiteSpace(p))
-                            .Select(int.Parse)
-                            .First();
-                        lastPortWidth = width + 1;
+                        portWidth = widthStr;
+                        lastPortWidth = portWidth;
                     }
-                    else
+
+                    moduleports.Add(new Port
                     {
-                        moduleports.Add(new Port
-                        {
-                            Direction = lastPortDirection,
-                            Type = lastPortType,
-                            Width = lastPortWidth,
-                            Name = element,
-                            Signed = isSigned
-                        });
-                    }
+                        Direction = portDirection,
+                        Type = portType,
+                        Width = portWidth,
+                        Name = nameStr,
+                        Signed = isSigned
+                    });
                 }
             }
             
@@ -160,6 +167,7 @@ public class VerilogParser
                 Logic = modulelogic
             });
         }
+        
         return modules;
     }
     

@@ -91,7 +91,7 @@ public partial class ConfigFile : ObservableObject
                     port.Direction.ToString().ToLower() == "output" ? "out" :
                     port.Direction.ToString().ToLower();
                 yml += $"{indentBy(4)}\"direction\": \"{direction}\",\n";
-                yml += $"{indentBy(4)}\"size\": {port.Width}\n";
+                yml += $"{indentBy(4)}\"size\": \"{port.Width}\"\n";
                 yml += $"{indentBy(3)}}},\n";
             }
             yml += $"{indentBy(2)}}},\n";
