@@ -104,6 +104,7 @@ public class VerilogParser
             PortDirections lastPortDirection = PortDirections.none;
             PortTypes lastPortType = PortTypes.none;
             string lastPortWidth = "1";
+            bool lastIsSigned = false;
 
             foreach (var port in ports)
             {
@@ -116,36 +117,53 @@ public class VerilogParser
                     var signedStr = matchPortDeclaration.Groups["signed"].Value;
                     var widthStr = matchPortDeclaration.Groups["width"].Value;
                     var nameStr = matchPortDeclaration.Groups["name"].Value;
-
-                    PortDirections portDirection = lastPortDirection;
-                    PortTypes portType = lastPortType;
-                    string portWidth = lastPortWidth;
-                    bool isSigned = false;
+                    
 
                     if (!string.IsNullOrWhiteSpace(directionStr) && Enum.TryParse(directionStr, out PortDirections parsedDirection))
                     {
                         portDirection = parsedDirection;
                         lastPortDirection = portDirection;
                         lastPortType = PortTypes.wire;      // reset type to wire, if direction is changed
+                        lastIsSigned = false                // teset signed flag, if direction is changed
                         lastPortWidth = "1";                // reset width to 1, if direction is changed
                     }
+                    else
+                    {
+                        portDirection = lastPortDirection;
+                    }
+                        
 
                     if (!string.IsNullOrWhiteSpace(typeStr) && Enum.TryParse(typeStr, out PortTypes parsedType))
                     {
                         portType = parsedType;
                         lastPortType = portType;
+                        lastIsSigned = false;               // reset signed flag, if type is changed
                         lastPortWidth = "1";                // reset width to 1, if type is changed
+                    }
+                    else
+                    {
+                        portType = lastPortType;
                     }
 
                     if (!string.IsNullOrWhiteSpace(signedStr))
                     {
                         isSigned = true;
+                        lastIsSigned = isSigned;
+                        lastPortWidth = "1";                // reset width to 1, if signed is changed
+                    }
+                    else
+                    {
+                        isSigned = lastIsSigned;
                     }
 
                     if (!string.IsNullOrWhiteSpace(widthStr))
                     {
                         portWidth = widthStr;
                         lastPortWidth = portWidth;
+                    }
+                    else
+                    {
+                        portWidth = lastPortWidth;
                     }
 
                     moduleports.Add(new Port
