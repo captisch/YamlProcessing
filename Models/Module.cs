@@ -124,7 +124,7 @@ public class VerilogParser
                         portDirection = parsedDirection;
                         lastPortDirection = portDirection;
                         lastPortType = PortTypes.wire;      // reset type to wire, if direction is changed
-                        lastIsSigned = false                // teset signed flag, if direction is changed
+                        lastIsSigned = false;                // teset signed flag, if direction is changed
                         lastPortWidth = "1";                // reset width to 1, if direction is changed
                     }
                     else
