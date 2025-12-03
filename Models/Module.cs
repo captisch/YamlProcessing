@@ -118,6 +118,11 @@ public class VerilogParser
                     var widthStr = matchPortDeclaration.Groups["width"].Value;
                     var nameStr = matchPortDeclaration.Groups["name"].Value;
                     
+                    PortDirections portDirection;
+                    PortTypes portType;
+                    string portWidth;
+                    bool isSigned;
+                    
 
                     if (!string.IsNullOrWhiteSpace(directionStr) && Enum.TryParse(directionStr, out PortDirections parsedDirection))
                     {
